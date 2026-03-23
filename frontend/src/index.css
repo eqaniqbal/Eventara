@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&display=swap');
+
+:root {
+  /* Core palette */
+  --orange:      #F97316;
+  --orange-deep: #EA580C;
+  --orange-soft: #FED7AA;
+  --orange-pale: #FFF7ED;
+  --coral:       #FB7185;
+  --coral-pale:  #FFF1F2;
+  --amber:       #FBBF24;
+  --amber-pale:  #FFFBEB;
+  --sky:         #38BDF8;
+  --sky-pale:    #F0F9FF;
+  --mint:        #34D399;
+
+  /* Neutrals */
+  --white:       #FFFFFF;
+  --cream:       #FEFAF6;
+  --cream2:      #FDF4EC;
+  --stone:       #F5F0EB;
+  --text:        #1C1410;
+  --text2:       #6B5E54;
+  --text3:       #A89990;
+
+  /* Shadows */
+  --shadow-sm:   0 2px 8px rgba(249,115,22,0.08);
+  --shadow-md:   0 8px 28px rgba(249,115,22,0.12);
+  --shadow-lg:   0 20px 60px rgba(249,115,22,0.16);
+  --shadow-card: 0 4px 20px rgba(28,20,16,0.08);
+
+  /* Radius */
+  --r-sm: 12px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 40px;
+  --r-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: 'Fraunces', serif; line-height: 1.1; }
+a { text-decoration: none; color: inherit; }
+button { font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; border: none; outline: none; }
+input, textarea, select { font-family: 'Plus Jakarta Sans', sans-serif; outline: none; }
+
+/* ── Keyframes ── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes scaleIn  { from { opacity:0; transform:scale(0.93); } to { opacity:1; transform:scale(1); } }
+@keyframes float    { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-14px) rotate(2deg)} }
+@keyframes float2   { 0%,100%{transform:translateY(0) rotate(3deg)} 50%{transform:translateY(-10px) rotate(-3deg)} }
+@keyframes wiggle   { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+@keyframes ticker   { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes spin     { to{transform:rotate(360deg)} }
+@keyframes shimmer  { 0%{background-position:-200% center} 100%{background-position:200% center} }
+@keyframes blobMove { 0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%} 50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%} }
+@keyframes popIn    { 0%{opacity:0;transform:scale(0.7) translateY(10px)} 70%{transform:scale(1.06)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes gradMove { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+.fade-up  { animation: fadeUp  0.65s cubic-bezier(0.16,1,0.3,1) both; }
+.fade-in  { animation: fadeIn  0.4s ease both; }
+.scale-in { animation: scaleIn 0.35s ease both; }
+.pop-in   { animation: popIn   0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.d1{animation-delay:.1s} .d2{animation-delay:.2s} .d3{animation-delay:.3s}
+.d4{animation-delay:.4s} .d5{animation-delay:.5s} .d6{animation-delay:.6s} .d7{animation-delay:.75s}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
