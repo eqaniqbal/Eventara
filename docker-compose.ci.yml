@@ -1,0 +1,75 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────
+# Eventara – Docker Compose for Jenkins CI/CD (Part 2)
+#
+# Changes from Part 1:
+#   - Different port numbers (8080 frontend, 9000 backend, 5433 db)
+#   - Different container names (ci_ prefix)
+#   - Code mounted via volumes instead of Dockerfile build
+# ─────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── 1. PostgreSQL Database ──────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: ci_eventara_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: eik
+      POSTGRES_PASSWORD: eik100305
+      POSTGRES_DB: EventaraDatabase
+    ports:
+      - "5433:5432"                              # ← different port from Part 1
+    volumes:
+      - ci_postgres_data:/var/lib/postgresql/data  # ← persistent volume for DB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eik -d EventaraDatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── 2. FastAPI Backend ──────────────────────────────────────────
+  backend:
+    image: python:3.11-slim
+    container_name: ci_eventara_backend
+    restart: unless-stopped
+    working_dir: /app
+    command: >
+      bash -c "pip install -r requirements.txt --quiet &&
+               uvicorn main:app --host 0.0.0.0 --port 9000"
+    environment:
+      DATABASE_URL: postgresql://eik:eik100305@db:5432/EventaraDatabase
+    ports:
+      - "9000:9000"                              # ← different port from Part 1
+    volumes:
+      - ./backend:/app                           # ← code mounted as volume
+      - ci_uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── 3. React / Nginx Frontend ───────────────────────────────────
+  frontend:
+    image: node:20-alpine
+    container_name: ci_eventara_frontend
+    restart: unless-stopped
+    working_dir: /app
+    command: >
+      sh -c "npm install --silent &&
+             npm run build &&
+             npx serve -s dist -l 8080"
+    ports:
+      - "8080:8080"                              # ← different port from Part 1
+    volumes:
+      - ./frontend:/app                          # ← code mounted as volume
+    depends_on:
+      - backend
+
+# ─────────────────────────────────────────────────────────────────
+# Named Volumes
+# ─────────────────────────────────────────────────────────────────
+volumes:
+  ci_postgres_data:    # PostgreSQL data (persistent)
+  ci_uploads_data:     # Uploaded media files (persistent)

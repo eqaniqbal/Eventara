@@ -12,7 +12,7 @@ export default function UserDashboard() {
   const [loadingBookings,setLoadingBookings]=useState(false);
   const [showModal,setShowModal]=useState(false); const [currentBooking,setCurrentBooking]=useState(null); const [cancelReason,setCancelReason]=useState("");
   const user=JSON.parse(localStorage.getItem("user")); const userId=user?.id; const userName=user?.name||"Friend";
-  const BACKEND_URL="http://localhost:8000";
+  const BACKEND_URL="http://98.93.67.65:8000";
 
   useEffect(()=>{ fetch(`${BACKEND_URL}/events`).then(r=>r.json()).then(d=>{ const m=d.events.map(e=>({id:e.id,title:e.title,date:e.date,time:e.time,location:e.location,capacity:e.capacity,remainingSeats:e.remaining_seats,price:e.price,image:e.banner_url?`${BACKEND_URL}${e.banner_url}`:eventBg})); setEvents(m);setFilteredEvents(m); }).catch(console.error); },[]);
   useEffect(()=>{ if(!userId)return; const load=()=>{ setLoadingBookings(true); fetch(`${BACKEND_URL}/bookings/${userId}`).then(r=>r.json()).then(d=>{ setBookings((d.bookings||[]).map(b=>({...b,image:b.banner_url?`${BACKEND_URL}${b.banner_url}`:eventBg}))); }).catch(console.error).finally(()=>setLoadingBookings(false)); }; load(); const iv=setInterval(load,10000); return()=>clearInterval(iv); },[userId]);

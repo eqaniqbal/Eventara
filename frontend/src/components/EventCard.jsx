@@ -21,7 +21,7 @@ export default function EventCard({ title,date,time,location,capacity,remainingS
         <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,rgba(28,20,16,0.4) 0%,transparent 55%)" }} />
         {price!==undefined&&showCapacity&&(
           <div style={{ position:"absolute", top:12, right:12, background: soldOut?"rgba(107,114,128,0.9)":"linear-gradient(135deg,var(--orange),var(--orange-deep))", color:"#fff", padding:"5px 13px", borderRadius:999, fontSize:12, fontWeight:800, backdropFilter:"blur(8px)" }}>
-            {soldOut?"Sold Out":`$${price}`}
+            {soldOut?"Sold Out":`PKR ${price}`}
           </div>
         )}
         {almostGone&&<div style={{ position:"absolute", bottom:12, left:12, background:"rgba(251,113,133,0.92)", color:"#fff", padding:"4px 10px", borderRadius:999, fontSize:11, fontWeight:700 }}>🔥 Only {remainingSeats} left!</div>}

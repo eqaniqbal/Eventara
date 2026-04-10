@@ -8,9 +8,9 @@ export default function BookingDetails() {
   const[message,setMessage]=useState(""); const[quantity,setQuantity]=useState(1);
   const[booking,setBooking]=useState(false); const[success,setSuccess]=useState(false);
 
-  useEffect(()=>{ fetch("http://localhost:8000/events").then(r=>r.json()).then(d=>{ const e=d.events.find(ev=>ev.id.toString()===eventId); setEvent(e?{...e,remainingSeats:e.remaining_seats,image:e.banner_url?`http://localhost:8000${e.banner_url}`:eventBg}:null); setLoading(false); }).catch(()=>setLoading(false)); },[eventId]);
+  useEffect(()=>{ fetch("http://98.93.67.65:8000/events").then(r=>r.json()).then(d=>{ const e=d.events.find(ev=>ev.id.toString()===eventId); setEvent(e?{...e,remainingSeats:e.remaining_seats,image:e.banner_url?`http://98.93.67.65:8000${e.banner_url}`:eventBg}:null); setLoading(false); }).catch(()=>setLoading(false)); },[eventId]);
 
-  const handleBooking=()=>{ if(quantity>event.remainingSeats){setMessage(`Only ${event.remainingSeats} seats available`);return;} setBooking(true); const fd=new FormData(); fd.append("quantity",quantity); fetch(`http://localhost:8000/bookings/${eventId}/${userId}`,{method:"POST",body:fd}).then(r=>r.json()).then(d=>{ if(d.detail)setMessage(d.detail); else{setSuccess(true);setEvent(p=>({...p,remainingSeats:p.remainingSeats-quantity}));setQuantity(1);setMessage("");} }).catch(()=>setMessage("Error booking event")).finally(()=>setBooking(false)); };
+  const handleBooking=()=>{ if(quantity>event.remainingSeats){setMessage(`Only ${event.remainingSeats} seats available`);return;} setBooking(true); const fd=new FormData(); fd.append("quantity",quantity); fetch(`http://98.93.67.65:8000/bookings/${eventId}/${userId}`,{method:"POST",body:fd}).then(r=>r.json()).then(d=>{ if(d.detail)setMessage(d.detail); else{setSuccess(true);setEvent(p=>({...p,remainingSeats:p.remainingSeats-quantity}));setQuantity(1);setMessage("");} }).catch(()=>setMessage("Error booking event")).finally(()=>setBooking(false)); };
 
   if(loading)return(<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"var(--cream)",flexDirection:"column",gap:16}}><div style={{width:48,height:48,border:"3px solid var(--orange)",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 0.8s linear infinite"}}/><p style={{color:"var(--text3)",fontWeight:500,fontFamily:"'Plus Jakarta Sans',sans-serif"}}>Loading event...</p></div>);
   if(!event)return(<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"var(--cream)",fontFamily:"'Plus Jakarta Sans',sans-serif",flexDirection:"column",gap:16}}><div style={{fontSize:64}}>😕</div><h2 style={{fontFamily:"'Fraunces',serif",color:"var(--text)"}}>Event not found</h2><button onClick={()=>navigate(-1)} style={{padding:"12px 24px",borderRadius:12,background:"linear-gradient(135deg,var(--orange),var(--orange-deep))",color:"#fff",fontWeight:700,border:"none",cursor:"pointer"}}>← Go Back</button></div>);
@@ -69,11 +69,11 @@ export default function BookingDetails() {
             <div style={{ background:"linear-gradient(135deg,#FFF7ED,#FFF0E0)", borderRadius:16, padding:"20px 24px", border:"1.5px solid rgba(249,115,22,0.15)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:12, fontWeight:700, color:"var(--orange-deep)", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:4 }}>Per Ticket</div>
-                <div style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:40, color:"var(--orange)", letterSpacing:"-1px" }}>${event.price}</div>
+                <div style={{ fontFamily:"'Fraunces',serif", fontWeight:520, fontSize:25, color:"var(--orange)", letterSpacing:"-1px" }}>PKR {event.price}</div>
               </div>
               <div style={{ textAlign:"right" }}>
                 <div style={{ fontSize:12, fontWeight:700, color:"var(--text3)", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:4 }}>Total</div>
-                <div style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:40, color:"var(--text)", letterSpacing:"-1px" }}>${event.price*quantity}</div>
+                <div style={{ fontFamily:"'Fraunces',serif", fontWeight:520, fontSize:25, color:"var(--text)", letterSpacing:"-1px" }}>PKR {event.price*quantity}</div>
               </div>
             </div>
 
@@ -105,7 +105,7 @@ export default function BookingDetails() {
               }}
               onMouseEnter={e=>{if(!soldOut&&!booking){e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 12px 36px rgba(249,115,22,0.45)";}}}
               onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}>
-                {booking?"Processing...":soldOut?"Sold Out":`🎟️ Book ${quantity} Ticket${quantity>1?"s":""} — $${event.price*quantity}`}
+                {booking?"Processing...":soldOut?"Sold Out":`🎟️ Book ${quantity} Ticket${quantity>1?"s":""} — PKR ${event.price*quantity}`}
               </button>
             )}
           </div>
@@ -114,3 +114,5 @@ export default function BookingDetails() {
     </div>
   );
 }
+
+

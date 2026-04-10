@@ -7,11 +7,11 @@ export default function AddEvent() {
   const [image,setImage]=useState(null); const [loading,setLoading]=useState(false); const [focus,setFocus]=useState("");
   const set=k=>e=>setFields(p=>({...p,[k]:e.target.value}));
 
-  const handleSubmit=async(e)=>{ e.preventDefault(); const{title,date,time,location,capacity,price}=fields; if(!title||!date||!time||!location||!capacity||!price)return alert("All fields are required."); if(new Date(date)<new Date(new Date().toDateString()))return alert("Event date cannot be in the past."); if(Number(capacity)<=0)return alert("Capacity must be > 0."); if(Number(price)<0)return alert("Price cannot be negative."); setLoading(true); const su=JSON.parse(localStorage.getItem("user")); const hostId=su?.id; if(!hostId){alert("Not logged in.");setLoading(false);return;} const fd=new FormData(); Object.entries({...fields,host_id:hostId}).forEach(([k,v])=>fd.append(k,v)); if(image)fd.append("image",image); try{ const res=await fetch("http://127.0.0.1:8000/events",{method:"POST",body:fd}); const data=await res.json(); if(!res.ok)alert(data.detail||"Failed to create event."); else{alert("Event created! 🎉");navigate("/ownerdashboard",{state:{refresh:true}});} }catch{alert("Server error");} setLoading(false); };
+  const handleSubmit=async(e)=>{ e.preventDefault(); const{title,date,time,location,capacity,price}=fields; if(!title||!date||!time||!location||!capacity||!price)return alert("All fields are required."); if(new Date(date)<new Date(new Date().toDateString()))return alert("Event date cannot be in the past."); if(Number(capacity)<=0)return alert("Capacity must be > 0."); if(Number(price)<0)return alert("Price cannot be negative."); setLoading(true); const su=JSON.parse(localStorage.getItem("user")); const hostId=su?.id; if(!hostId){alert("Not logged in.");setLoading(false);return;} const fd=new FormData(); Object.entries({...fields,host_id:hostId}).forEach(([k,v])=>fd.append(k,v)); if(image)fd.append("image",image); try{ const res=await fetch("http://98.93.67.65:8000/events",{method:"POST",body:fd}); const data=await res.json(); if(!res.ok)alert(data.detail||"Failed to create event."); else{alert("Event created! 🎉");navigate("/ownerdashboard",{state:{refresh:true}});} }catch{alert("Server error");} setLoading(false); };
 
   const inp=k=>({ width:"100%", padding:"12px 16px", borderRadius:12, border:`2px solid ${focus===k?"var(--orange)":"rgba(249,115,22,0.15)"}`, fontSize:14, background:focus===k?"#FFFBF7":"#fff", color:"var(--text)", boxShadow:focus===k?"0 0 0 4px rgba(249,115,22,0.08)":"none", transition:"all 0.2s", boxSizing:"border-box" });
 
-  const flds=[{l:"Event Title",k:"title",t:"text",p:"Give your event a great name!"},{l:"Location",k:"location",t:"text",p:"City, venue name"},{l:"Date",k:"date",t:"date"},{l:"Time",k:"time",t:"time"},{l:"Capacity",k:"capacity",t:"number",p:"Max attendees"},{l:"Ticket Price ($)",k:"price",t:"number",p:"0 for free events"}];
+  const flds=[{l:"Event Title",k:"title",t:"text",p:"Give your event a great name!"},{l:"Location",k:"location",t:"text",p:"City, venue name"},{l:"Date",k:"date",t:"date"},{l:"Time",k:"time",t:"time"},{l:"Capacity",k:"capacity",t:"number",p:"Max attendees"},{l:"Ticket Price (PKR)",k:"price",t:"number",p:"0 for free events"}];
 
   return (
     <div style={{ minHeight:"100vh", background:"var(--cream)", fontFamily:"'Plus Jakarta Sans',sans-serif" }}>
@@ -48,7 +48,7 @@ export default function AddEvent() {
                 onMouseEnter={e=>{e.currentTarget.style.borderColor="var(--orange)";e.currentTarget.style.background="var(--orange-soft)";}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(249,115,22,0.25)";e.currentTarget.style.background="var(--orange-pale)";}}>
                 <div style={{ fontSize:36, marginBottom:8 }}>🖼️</div>
-                <p style={{ fontWeight:700, color:image?"var(--orange-deep)":"var(--text2)", margin:0, fontSize:14 }}>{image?`✅ ${image.name}`:"Click to upload event banner"}</p>
+                <p style={{ fontWeight:700, color:image?"var(--orange-deep)":"var(--text2)", margin:0, fontSize:14 }}>{image?`✅ PKR {image.name}`:"Click to upload event banner"}</p>
                 <p style={{ color:"var(--text3)", fontSize:12, marginTop:4 }}>PNG, JPG — Backend stores in uploads folder</p>
                 <input type="file" accept="image/*" onChange={e=>setImage(e.target.files[0])} style={{ position:"absolute", inset:0, opacity:0, cursor:"pointer" }} />
               </div>

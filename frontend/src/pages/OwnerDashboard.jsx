@@ -8,7 +8,7 @@ export default function OwnerDashboard() {
   const [reservations,setReservations]=useState([]); const [events,setEvents]=useState([]);
   const [activeTab,setActiveTab]=useState("events"); const [searchQuery,setSearchQuery]=useState("");
   const [cancelRequests,setCancelRequests]=useState([]);
-  const BACKEND_URL="http://localhost:8000";
+  const BACKEND_URL="http://98.93.67.65:8000";
   const ownerId=Number(localStorage.getItem("ownerId"));
   const user=JSON.parse(localStorage.getItem("user")); const ownerName=user?.name||"Owner";
 
@@ -44,7 +44,7 @@ export default function OwnerDashboard() {
               {[["🎯","Events",events.length,"#F97316"],["💰","Revenue",reservations.reduce((s,r)=>s+(r.amount_paid||0),0),"#34D399"],["⚠️","Requests",cancelRequests.length,"#FBBF24"]].map(([e,l,v,c])=>(
                 <div key={l} style={{ background:"rgba(255,255,255,0.07)", backdropFilter:"blur(10px)", borderRadius:16, padding:"14px 20px", textAlign:"center", border:"1px solid rgba(255,255,255,0.08)" }}>
                   <div style={{ fontSize:20, marginBottom:2 }}>{e}</div>
-                  <div style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:26, color:c }}>{l==="Revenue"?`$${v}`:v}</div>
+                  <div style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:26, color:c }}>{l==="Revenue"?`PKR ${v}`:v}</div>
                   <div style={{ color:"rgba(255,255,255,0.5)", fontSize:11, fontWeight:600 }}>{l}</div>
                 </div>
               ))}

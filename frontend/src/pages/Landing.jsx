@@ -6,7 +6,7 @@ const TICKER = ["🎵 Live Concerts","🎨 Art Shows","💼 Summits","🏃 Sport
 const FEATURES = [
   { emoji:"🎟️", title:"Book in Seconds",   desc:"Find an event you love, grab your tickets, done. Checkout takes under 30 seconds.",   bg:"#FFF7ED", border:"#FED7AA" },
   { emoji:"📍", title:"Events Near You",    desc:"Discover what's happening in your city — concerts, workshops, food fests and more.",   bg:"#F0F9FF", border:"#BAE6FD" },
-  { emoji:"🔒", title:"Safe & Trusted",     desc:"Every booking is secure. Cancel up to 48 hours before your event, no questions asked.", bg:"#F0FDF4", border:"#A7F3D0" },
+  { emoji:"🔒", title:"Safe & Trusted",     desc:"Every booking is secure. Cancel up to 24 hours before your event, no questions asked.", bg:"#F0FDF4", border:"#A7F3D0" },
 ];
 
 const CATS = [
@@ -25,10 +25,10 @@ const TESTIMONIALS = [
 ];
 
 const STATS = [
-  { val:"12K+", label:"Events", emoji:"🎉" },
-  { val:"48K+", label:"Attendees", emoji:"👥" },
+  { val:"10+", label:"Events", emoji:"🎉" },
+  { val:"100+", label:"Attendees", emoji:"👥" },
   { val:"98%",  label:"Satisfaction", emoji:"⭐" },
-  { val:"150+", label:"Cities", emoji:"📍" },
+  { val:"10+", label:"Cities", emoji:"📍" },
 ];
 
 export default function Landing() {
@@ -70,7 +70,7 @@ export default function Landing() {
         borderBottom: navScrolled ? "1px solid rgba(249,115,22,0.1)" : "none",
         transition: "all 0.35s",
       }}>
-        <div style={{ fontFamily: "'Fraunces',serif", fontWeight: 700, fontSize: 26, color: "var(--orange)", letterSpacing: "-0.5px" }}>Eventara ✨</div>
+        <div style={{ fontFamily: "'Fraunces',serif", fontWeight: 700, fontSize: 52, color: "var(--orange)", letterSpacing: "0.7px" }}>Eventara </div>
         <div style={{ display: "flex", gap: 10 }}>
           <Btn onClick={() => navigate("/login")} style={{ padding: "10px 24px", fontSize: 14 }}>Log In</Btn>
           <Btn solid onClick={() => navigate("/register")} style={{ padding: "10px 24px", fontSize: 14 }}>Get Started →</Btn>
@@ -105,15 +105,7 @@ export default function Landing() {
         ))}
 
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: 820 }}>
-          {/* Badge */}
-          <div className="fade-up" style={{
-            display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 20px",
-            background: "white", borderRadius: "var(--r-full)",
-            boxShadow: "0 4px 16px rgba(249,115,22,0.15)", marginBottom: 28, fontSize: 13, fontWeight: 600,
-            color: "var(--orange-deep)", border: "1.5px solid var(--orange-soft)",
-          }}>
-            <span>🇵🇰</span> Pakistan's Most Loved Event Platform <span>🎊</span>
-          </div>
+          
 
           <h1 className="fade-up d1" style={{
             fontFamily: "'Fraunces',serif", fontWeight: 700,
@@ -137,7 +129,7 @@ export default function Landing() {
             fontSize: 18, fontWeight: 400, color: "var(--text2)", lineHeight: 1.75,
             maxWidth: 520, margin: "0 auto 44px", letterSpacing: "0.1px",
           }}>
-            Discover concerts, conferences, food festivals and more — then book your spot in seconds. Your next favourite memory is one click away.
+            Discover concerts, conferences, food festivals and more then book your spot in seconds. Your next favourite memory is one click away.
           </p>
 
           <div className="fade-up d4" style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
@@ -266,7 +258,7 @@ export default function Landing() {
             Your next favourite event<br />is waiting for you
           </h2>
           <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 17, marginBottom: 40, maxWidth: 460, margin: "0 auto 36px", lineHeight: 1.7 }}>
-            Join 48,000+ event lovers who use Eventara to discover, book and enjoy incredible experiences.
+            Join event lovers who use Eventara to discover, book and enjoy incredible experiences.
           </p>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
             <button onClick={() => navigate("/register")} style={{
@@ -293,7 +285,7 @@ export default function Landing() {
 
       {/* ── FOOTER ── */}
       <footer style={{ background: "var(--text)", padding: "36px 6%", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-        <div style={{ fontFamily: "'Fraunces',serif", fontWeight: 700, fontSize: 22, color: "var(--orange)" }}>Eventara ✨</div>
+        <div style={{ fontFamily: "'Fraunces',serif", fontWeight: 700, fontSize: 22, color: "var(--orange)" }}>Eventara </div>
         <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>© 2025 Eventara. All rights reserved.</p>
         <div style={{ display: "flex", gap: 24 }}>
           {["Privacy","Terms","Contact"].map(l => (

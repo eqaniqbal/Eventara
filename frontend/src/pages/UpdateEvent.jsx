@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function UpdateEvent() {
-  const navigate=useNavigate(); const{id}=useParams(); const BACKEND_URL="http://127.0.0.1:8000";
+  const navigate=useNavigate(); const{id}=useParams(); const BACKEND_URL="http://98.93.67.65:8000";
   const[fields,setFields]=useState({title:"",description:"",date:"",time:"",location:"",capacity:"",price:""});
   const[image,setImage]=useState(null); const[loading,setLoading]=useState(false); const[fetching,setFetching]=useState(true); const[focus,setFocus]=useState("");
   const set=k=>e=>setFields(p=>({...p,[k]:e.target.value}));
@@ -10,7 +10,7 @@ export default function UpdateEvent() {
   const handleSubmit=async(e)=>{ e.preventDefault(); setLoading(true); const fd=new FormData(); Object.entries(fields).forEach(([k,v])=>fd.append(k,v)); if(image)fd.append("image",image); try{ const res=await fetch(`${BACKEND_URL}/events/${id}`,{method:"PUT",body:fd}); const data=await res.json(); if(!res.ok)alert(data.detail||"Failed to update."); else{alert("Event updated! ✅");navigate("/ownerdashboard",{state:{refresh:true}});} }catch{alert("Server error");} setLoading(false); };
 
   const inp=k=>({width:"100%",padding:"12px 16px",borderRadius:12,border:`2px solid ${focus===k?"var(--orange)":"rgba(249,115,22,0.15)"}`,fontSize:14,background:focus===k?"#FFFBF7":"#fff",color:"var(--text)",boxShadow:focus===k?"0 0 0 4px rgba(249,115,22,0.08)":"none",transition:"all 0.2s",boxSizing:"border-box"});
-  const flds=[{l:"Event Title",k:"title",t:"text",p:"Event name"},{l:"Location",k:"location",t:"text",p:"City, venue"},{l:"Date",k:"date",t:"date"},{l:"Time",k:"time",t:"time"},{l:"Capacity",k:"capacity",t:"number",p:"Max attendees"},{l:"Ticket Price ($)",k:"price",t:"number",p:"0 for free"}];
+  const flds=[{l:"Event Title",k:"title",t:"text",p:"Event name"},{l:"Location",k:"location",t:"text",p:"City, venue"},{l:"Date",k:"date",t:"date"},{l:"Time",k:"time",t:"time"},{l:"Capacity",k:"capacity",t:"number",p:"Max attendees"},{l:"Ticket Price (PKR)",k:"price",t:"number",p:"0 for free"}];
 
   if(fetching)return(<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"var(--cream)"}}><div style={{width:44,height:44,border:"3px solid var(--orange)",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 0.8s linear infinite"}}/></div>);
 
