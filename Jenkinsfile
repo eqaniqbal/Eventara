@@ -28,7 +28,8 @@ pipeline {
         stage('Cleanup Old Containers') {
             steps {
                 echo 'Stopping and removing old containers...'
-                sh 'docker compose -f ${COMPOSE_FILE} down --remove-orphans || true'
+                sh 'docker stop ci_eventara_frontend ci_eventara_backend ci_eventara_db || true'
+                sh 'docker rm ci_eventara_frontend ci_eventara_backend ci_eventara_db || true'
             }
         }
 
@@ -36,7 +37,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building containerized application...'
-                sh 'docker compose -f ${COMPOSE_FILE} pull'
+                sh 'docker compose -f docker-compose.ci.yml pull'
             }
         }
 
@@ -44,7 +45,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Launching containers with Docker Compose...'
-                sh 'docker compose -f ${COMPOSE_FILE} up -d'
+                sh 'docker compose -f docker-compose.ci.yml up -d'
             }
         }
 
@@ -52,7 +53,7 @@ pipeline {
         stage('Verify') {
             steps {
                 echo 'Verifying all containers are running...'
-                sh 'docker compose -f ${COMPOSE_FILE} ps'
+                sh 'docker compose -f docker-compose.ci.yml ps'
                 sh 'sleep 15'
                 sh 'docker ps | grep ci_eventara'
             }
@@ -62,11 +63,11 @@ pipeline {
     // ── Post actions ──────────────────────────────────────────────
     post {
         success {
-            echo '✅ Build successful! Eventara is running on ports 8080 (frontend) and 9000 (backend).'
+            echo 'Build successful! Eventara is running on ports 8080 (frontend) and 9000 (backend).'
         }
         failure {
-            echo '❌ Build failed! Check logs above for details.'
-            sh 'docker compose -f ${COMPOSE_FILE} logs || true'
+            echo 'Build failed! Check logs above for details.'
+            sh 'docker compose -f docker-compose.ci.yml logs || true'
         }
     }
 }
