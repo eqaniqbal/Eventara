@@ -5,7 +5,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Fetching code from GitHub...'
+                echo 'Fetching code from GitHub Please Wait...'
                 checkout scm
             }
         }
