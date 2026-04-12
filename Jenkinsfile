@@ -26,6 +26,7 @@ pipeline {
                     docker rm ci_eventara_backend || true
                     docker rm ci_eventara_db || true
                     docker network rm ci_network || true
+                    docker system prune -f || true
                 '''
             }
         }
@@ -76,6 +77,9 @@ pipeline {
     }
 
     post {
+        always {
+            cleanWs()
+        }
         success {
             echo 'Build successful! App running on port 8081 (frontend) and 9000 (backend).'
         }
