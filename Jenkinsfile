@@ -3,7 +3,6 @@ pipeline {
 
     stages {
 
-        // ── Stage 1: Fetch code from GitHub ──────────────────────
         stage('Checkout') {
             steps {
                 echo 'Fetching code from GitHub...'
@@ -11,18 +10,14 @@ pipeline {
             }
         }
 
-        // ── Stage 2: Verify Docker is available ──────────────────
         stage('Verify Docker') {
             steps {
-                echo 'Checking Docker...'
                 sh 'docker --version'
             }
         }
 
-        // ── Stage 3: Cleanup old containers ──────────────────────
         stage('Cleanup') {
             steps {
-                echo 'Cleaning up old containers...'
                 sh '''
                     docker stop ci_eventara_frontend || true
                     docker stop ci_eventara_backend || true
@@ -35,20 +30,8 @@ pipeline {
             }
         }
 
-        // ── Stage 4: Build ────────────────────────────────────────
-        stage('Build') {
-            steps {
-                echo 'Pulling required Docker images...'
-                sh 'docker pull postgres:16-alpine'
-                sh 'docker pull python:3.11-slim'
-                sh 'docker pull node:20-alpine'
-            }
-        }
-
-        // ── Stage 5: Deploy ───────────────────────────────────────
         stage('Deploy') {
             steps {
-                echo 'Creating network and deploying containers...'
                 sh 'docker network create ci_network || true'
 
                 sh '''
@@ -70,31 +53,23 @@ pipeline {
                         --name ci_eventara_backend \
                         --network ci_network \
                         -e DATABASE_URL=postgresql://eik:eik100305@ci_eventara_db:5432/EventaraDatabase \
-                        -p 9000:9000 \
-                        -v ${WORKSPACE}/backend:/app \
-                        -w /app \
-                        python:3.11-slim \
-                        bash -c "pip install -r requirements.txt -q && uvicorn main:app --host 0.0.0.0 --port 9000"
+                        -p 9000:8000 \
+                        eqaniqbal/eventara-backend:latest
                 '''
 
                 sh '''
                     docker run -d \
                         --name ci_eventara_frontend \
                         --network ci_network \
-                        -p 8081:8080 \
-                        -v ${WORKSPACE}/frontend:/app \
-                        -w /app \
-                        node:20-alpine \
-                        sh -c "npm install --silent && npm run build && npx serve -s dist -l 8080"
+                        -p 8081:80 \
+                        eqaniqbal/eventara-frontend:latest
                 '''
             }
         }
 
-        // ── Stage 6: Verify the Process───────────────────────────────────────
         stage('Verify') {
             steps {
-                echo 'Verifying containers are running...'
-                sh 'sleep 10'
+                sh 'sleep 5'
                 sh 'docker ps | grep ci_eventara'
             }
         }
@@ -102,12 +77,11 @@ pipeline {
 
     post {
         success {
-            echo 'Build successful! App running on port 9000 (backend) and 8081 (frontend).'
+            echo 'Build successful! App running on port 8081 (frontend) and 9000 (backend).'
         }
         failure {
             echo 'Build failed!'
             sh 'docker logs ci_eventara_backend || true'
-            sh 'docker logs ci_eventara_frontend || true'
         }
     }
 }
