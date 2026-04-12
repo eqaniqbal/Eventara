@@ -53,6 +53,7 @@ pipeline {
                     docker run -d \
                         --name ci_eventara_backend \
                         --network ci_network \
+                        --network-alias backend \
                         -e DATABASE_URL=postgresql://eik:eik100305@ci_eventara_db:5432/EventaraDatabase \
                         -p 9000:8000 \
                         eqaniqbal/eventara-backend:latest
