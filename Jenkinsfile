@@ -72,7 +72,7 @@ pipeline {
                         eqaniqbal/eventara-frontend:latest
                 '''
 
-                sh 'sleep 15'
+                sh 'sleep 40'
             }
         }
 
