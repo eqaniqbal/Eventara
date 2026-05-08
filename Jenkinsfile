@@ -56,7 +56,7 @@ pipeline {
 
                 sh 'sleep 10'
 
-                // BACKEND
+                // BACKENDModule
                 sh '''
                     docker run -d \
                         --name ci_eventara_backend \
