@@ -22,9 +22,11 @@ pipeline {
                     docker stop ci_eventara_frontend || true
                     docker stop ci_eventara_backend || true
                     docker stop ci_eventara_db || true
+
                     docker rm ci_eventara_frontend || true
                     docker rm ci_eventara_backend || true
                     docker rm ci_eventara_db || true
+
                     docker network rm ci_network || true
                     docker system prune -f || true
                 '''
@@ -53,7 +55,6 @@ pipeline {
                     docker run -d \
                         --name ci_eventara_backend \
                         --network ci_network \
-                        --network-alias backend \
                         -e DATABASE_URL=postgresql://eik:eik100305@ci_eventara_db:5432/EventaraDatabase \
                         -p 9000:8000 \
                         eqaniqbal/eventara-backend:latest
@@ -79,47 +80,63 @@ pipeline {
 
         stage('Build Test Image') {
             steps {
-                echo 'Building containerized Selenium test image...'
+                echo 'Building Selenium test image...'
                 sh 'docker build -f Dockerfile.test -t eventara-selenium-test .'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running Selenium tests inside Docker container...'
+                echo 'Running Selenium tests inside Docker...'
+
                 sh '''
                     docker run --rm \
                         --network host \
                         -e APP_URL=http://127.0.0.1:8081 \
                         -v ${WORKSPACE}/tests:/tests \
                         eventara-selenium-test \
-                        python3 /tests/test_eventara.py 2>&1 | tee test_results.txt
+                        python3 /tests/test_eventara.py | tee test_results.txt
                 '''
             }
         }
     }
 
     post {
-        always {
-            emailext(
-                subject: "Jenkins Build ${currentBuild.result}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
-Status: ${currentBuild.result}
-Console Output: ${env.BUILD_URL}console
 
-Test Results:
-${fileExists('test_results.txt') ? readFile('test_results.txt') : 'No test results found.'}
-                """,
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
+        always {
+            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
             cleanWs()
         }
+
         success {
             echo 'Build and tests successful!'
         }
+
         failure {
             echo 'Build or tests failed!'
+        }
+
+        always {
+            script {
+                def recipient = env.CHANGE_AUTHOR_EMAIL
+
+                if (recipient == null || recipient.trim() == "") {
+                    echo "No commit author email found. Skipping email notification."
+                } else {
+                    emailext (
+                        to: recipient,
+                        subject: "Jenkins Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                        body: """
+Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status: ${currentBuild.currentResult}
+
+Docker CI/CD pipeline executed successfully.
+
+Check Jenkins logs for full details.
+"""
+                    )
+                }
+            }
         }
     }
 }
