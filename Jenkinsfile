@@ -5,7 +5,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Fetching code from GitHub Please Wait...'
+                echo 'Fetching code from GitHub...'
                 checkout scm
             }
         }
@@ -66,13 +66,32 @@ pipeline {
                         -p 8081:80 \
                         eqaniqbal/eventara-frontend:latest
                 '''
+
+                sh 'sleep 10'
             }
         }
 
         stage('Verify') {
             steps {
-                sh 'sleep 5'
                 sh 'docker ps | grep ci_eventara'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running Selenium tests...'
+                sh '''
+                    docker run --rm \
+                        --network ci_network \
+                        -v ${WORKSPACE}/tests:/tests \
+                        python:3.11-slim \
+                        bash -c "
+                            apt-get update -qq &&
+                            apt-get install -y -qq chromium chromium-driver &&
+                            pip install -r /tests/requirements.txt -q &&
+                            python /tests/test_eventara.py
+                        "
+                '''
             }
         }
     }
@@ -82,11 +101,10 @@ pipeline {
             cleanWs()
         }
         success {
-            echo 'Build successful! App running on port 8081 (frontend) and 9000 (backend).'
+            echo 'Build and tests successful!'
         }
         failure {
-            echo 'Build failed!'
-            sh 'docker logs ci_eventara_backend || true'
+            echo 'Build or tests failed!'
         }
     }
 }
