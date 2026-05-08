@@ -80,7 +80,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running Selenium tests...'
-                sh 'pip3 install selenium==4.18.1 webdriver-manager==4.0.1 --break-system-packages -q'
+                sh 'pip3 install selenium==4.18.1 webdriver-manager==4.0.1 pytest==8.1.1 --break-system-packages -q'
                 sh 'APP_URL=http://47.128.219.68:8081 python3 ${WORKSPACE}/tests/test_eventara.py'
             }
         }
