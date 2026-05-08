@@ -77,17 +77,43 @@ pipeline {
             }
         }
 
+        stage('Build Test Image') {
+            steps {
+                echo 'Building containerized Selenium test image...'
+                sh 'docker build -f Dockerfile.test -t eventara-selenium-test .'
+            }
+        }
+
         stage('Test') {
             steps {
-                echo 'Running Selenium tests...'
-                sh 'pip3 install selenium==4.18.1 webdriver-manager==4.0.1 pytest==8.1.1 --break-system-packages -q'
-                sh 'APP_URL=http://47.128.219.68:8081 python3 ${WORKSPACE}/tests/test_eventara.py'
+                echo 'Running Selenium tests inside Docker container...'
+                sh '''
+                    docker run --rm \
+                        --network host \
+                        -e APP_URL=http://127.0.0.1:8081 \
+                        -v ${WORKSPACE}/tests:/tests \
+                        eventara-selenium-test \
+                        python3 /tests/test_eventara.py 2>&1 | tee test_results.txt
+                '''
             }
         }
     }
 
     post {
         always {
+            emailext(
+                subject: "Jenkins Build ${currentBuild.result}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
+Status: ${currentBuild.result}
+Console Output: ${env.BUILD_URL}console
+
+Test Results:
+${fileExists('test_results.txt') ? readFile('test_results.txt') : 'No test results found.'}
+                """,
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'qasimalik@gmail.com'
+            )
             cleanWs()
         }
         success {
