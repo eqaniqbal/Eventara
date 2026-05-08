@@ -67,7 +67,7 @@ pipeline {
                         eqaniqbal/eventara-backend:latest
                 '''
 
-                // FRONTEND
+                // FRONTEND View
                 sh '''
                     docker run -d \
                         --name ci_eventara_frontend \
