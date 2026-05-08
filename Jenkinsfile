@@ -111,8 +111,7 @@ Console Output: ${env.BUILD_URL}console
 Test Results:
 ${fileExists('test_results.txt') ? readFile('test_results.txt') : 'No test results found.'}
                 """,
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                to: 'qasimalik@gmail.com'
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
             cleanWs()
         }
