@@ -138,7 +138,7 @@ pipeline {
             archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
 
             script {
-                def recipient = "eqaniqbal@gmail.com"
+                def recipient = env.GIT_AUTHOR_EMAIL ?: "eqaniqbal@gmail.com"
 
                 emailext (
                     to: recipient,
