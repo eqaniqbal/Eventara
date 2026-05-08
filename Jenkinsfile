@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sh 'docker network create ci_network || true'
 
-                // DATABASE
+               
                 sh '''
                     docker run -d \
                         --name ci_eventara_db \
