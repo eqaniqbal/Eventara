@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     stages {
 
         stage('Checkout') {
@@ -103,11 +107,6 @@ pipeline {
 
     post {
 
-        always {
-            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
-            cleanWs()
-        }
-
         success {
             echo 'Build and tests successful!'
         }
@@ -117,6 +116,8 @@ pipeline {
         }
 
         always {
+            archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
+
             script {
                 def recipient = env.CHANGE_AUTHOR_EMAIL
 
@@ -132,11 +133,14 @@ Status: ${currentBuild.currentResult}
 
 Docker CI/CD pipeline executed successfully.
 
-Check Jenkins logs for full details.
+Check Jenkins logs for full details:
+${env.BUILD_URL}console
 """
                     )
                 }
             }
+
+            cleanWs()
         }
     }
 }
