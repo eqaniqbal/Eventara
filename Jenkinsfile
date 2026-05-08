@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sh 'docker network create ci_network || true'
 
-                
+                // DATABASE
                 sh '''
                     docker run -d \
                         --name ci_eventara_db \
@@ -56,7 +56,7 @@ pipeline {
 
                 sh 'sleep 10'
 
-                // BACKEND (IMPORTANT FIX HERE)
+                // BACKEND (FIXED DNS)
                 sh '''
                     docker run -d \
                         --name ci_eventara_backend \
@@ -76,9 +76,10 @@ pipeline {
                         eqaniqbal/eventara-frontend:latest
                 '''
 
-                // WAIT FOR FRONTEND (CRITICAL FIX)
+                // WAIT FOR FRONTEND
                 sh '''
-                    echo "Waiting for frontend to be ready..."
+                    echo "Waiting for frontend..."
+
                     for i in {1..30}; do
                         if curl -s http://127.0.0.1:8081 > /dev/null; then
                             echo "Frontend is UP!"
@@ -88,7 +89,7 @@ pipeline {
                         sleep 5
                     done
 
-                    echo "Frontend failed to start"
+                    echo "Frontend failed"
                     exit 1
                 '''
             }
@@ -113,7 +114,8 @@ pipeline {
 
                 sh '''
                     docker run --rm \
-                        -e APP_URL=http://127.0.0.1:8081 \
+                        --network ci_network \
+                        -e APP_URL=http://ci_eventara_frontend:80 \
                         -v ${WORKSPACE}/tests:/tests \
                         eventara-selenium-test \
                         python3 /tests/test_eventara.py | tee test_results.txt
@@ -145,7 +147,7 @@ pipeline {
 Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status: ${currentBuild.currentResult}
 
-Docker CI/CD Pipeline executed successfully.
+Pipeline executed successfully.
 
 Check logs:
 ${env.BUILD_URL}console
