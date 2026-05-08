@@ -41,6 +41,7 @@ pipeline {
             steps {
                 sh 'docker network create ci_network || true'
 
+                // DB
                 sh '''
                     docker run -d \
                         --name ci_eventara_db \
@@ -55,15 +56,18 @@ pipeline {
 
                 sh 'sleep 10'
 
+                // BACKEND (IMPORTANT FIX HERE)
                 sh '''
                     docker run -d \
                         --name ci_eventara_backend \
                         --network ci_network \
+                        --network-alias backend \
                         -e DATABASE_URL=postgresql://eik:eik100305@ci_eventara_db:5432/EventaraDatabase \
                         -p 9000:8000 \
                         eqaniqbal/eventara-backend:latest
                 '''
 
+                // FRONTEND
                 sh '''
                     docker run -d \
                         --name ci_eventara_frontend \
@@ -72,7 +76,21 @@ pipeline {
                         eqaniqbal/eventara-frontend:latest
                 '''
 
-                sh 'sleep 40'
+                // WAIT FOR FRONTEND (CRITICAL FIX)
+                sh '''
+                    echo "Waiting for frontend to be ready..."
+                    for i in {1..30}; do
+                        if curl -s http://127.0.0.1:8081 > /dev/null; then
+                            echo "Frontend is UP!"
+                            exit 0
+                        fi
+                        echo "Waiting... ($i)"
+                        sleep 5
+                    done
+
+                    echo "Frontend failed to start"
+                    exit 1
+                '''
             }
         }
 
@@ -95,7 +113,7 @@ pipeline {
 
                 sh '''
                     docker run --rm \
-                        -e APP_URL=http://47.128.219.68:8081 \
+                        -e APP_URL=http://127.0.0.1:8081 \
                         -v ${WORKSPACE}/tests:/tests \
                         eventara-selenium-test \
                         python3 /tests/test_eventara.py | tee test_results.txt
@@ -127,7 +145,7 @@ pipeline {
 Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status: ${currentBuild.currentResult}
 
-Pipeline executed successfully.
+Docker CI/CD Pipeline executed successfully.
 
 Check logs:
 ${env.BUILD_URL}console
