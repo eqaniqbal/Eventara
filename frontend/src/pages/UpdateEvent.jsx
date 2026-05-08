@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function UpdateEvent() {
-  const navigate=useNavigate(); const{id}=useParams(); const BACKEND_URL="http://98.93.67.65:8000";
+  const navigate=useNavigate(); const{id}=useParams(); const BACKEND_URL="http://47.128.219.68:9000";
   const[fields,setFields]=useState({title:"",description:"",date:"",time:"",location:"",capacity:"",price:""});
   const[image,setImage]=useState(null); const[loading,setLoading]=useState(false); const[fetching,setFetching]=useState(true); const[focus,setFocus]=useState("");
   const set=k=>e=>setFields(p=>({...p,[k]:e.target.value}));
