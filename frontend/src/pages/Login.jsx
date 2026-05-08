@@ -7,7 +7,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const validate=()=>{let v=true,e={email:"",password:""};if(!email){e.email="Required";v=false;}else if(!/\S+@\S+\.\S+/.test(email)){e.email="Invalid email";v=false;}if(!password){e.password="Required";v=false;}setErrors(e);return v;};
-  const handleSubmit=async(ev)=>{ev.preventDefault();if(!validate())return;setLoading(true);try{const res=await fetch("http://98.93.67.65:8000/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});const data=await res.json();if(!res.ok){alert(data.detail||"Invalid credentials");setLoading(false);return;}localStorage.setItem("user",JSON.stringify(data.user));if(data.user.role==="owner"){localStorage.setItem("ownerId",data.user.id);navigate("/ownerdashboard");}else{localStorage.setItem("userId",data.user.id);navigate("/userdashboard");}}catch(err){alert("Server error: "+err.message);}finally{setLoading(false);}};
+  const handleSubmit=async(ev)=>{ev.preventDefault();if(!validate())return;setLoading(true);try{const res=await fetch("http://47.128.219.68:9000/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});const data=await res.json();if(!res.ok){alert(data.detail||"Invalid credentials");setLoading(false);return;}localStorage.setItem("user",JSON.stringify(data.user));if(data.user.role==="owner"){localStorage.setItem("ownerId",data.user.id);navigate("/ownerdashboard");}else{localStorage.setItem("userId",data.user.id);navigate("/userdashboard");}}catch(err){alert("Server error: "+err.message);}finally{setLoading(false);}};
 
   const inp = field => ({
     width:"100%", padding:"13px 16px", borderRadius:12,

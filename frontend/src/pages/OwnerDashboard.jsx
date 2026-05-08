@@ -8,7 +8,7 @@ export default function OwnerDashboard() {
   const [reservations,setReservations]=useState([]); const [events,setEvents]=useState([]);
   const [activeTab,setActiveTab]=useState("events"); const [searchQuery,setSearchQuery]=useState("");
   const [cancelRequests,setCancelRequests]=useState([]);
-  const BACKEND_URL="http://98.93.67.65:8000";
+  const BACKEND_URL="http://47.128.219.68:9000";
   const ownerId=Number(localStorage.getItem("ownerId"));
   const user=JSON.parse(localStorage.getItem("user")); const ownerName=user?.name||"Owner";
 
