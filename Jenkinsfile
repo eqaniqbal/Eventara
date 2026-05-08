@@ -110,7 +110,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running Selenium 15 tests...'
+                echo 'Running Selenium 15 case tests...'
 
                 sh '''
                     docker run --rm \
