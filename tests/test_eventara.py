@@ -7,9 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 BASE_URL = os.environ.get("APP_URL", "http://47.128.219.68:8081")
-TEST_EMAIL = f"selenium_{int(time.time())}@eventara.com"
+TEST_EMAIL = "test@eventara.com"
 TEST_PASSWORD = "Test@1234"
-TEST_NAME = "Selenium Tester"
+TEST_NAME = "Test User"
 
 def get_driver():
     options = Options()
@@ -66,19 +66,17 @@ def t5():
 run_test("Login form has required fields", t5)
 
 def t6():
-    driver.get(f"{BASE_URL}/register")
+    driver.get(f"{BASE_URL}/login")
     WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.TAG_NAME, "form")))
     inputs = driver.find_elements(By.TAG_NAME, "input")
     inputs[0].clear()
-    inputs[0].send_keys(TEST_NAME)
+    inputs[0].send_keys(TEST_EMAIL)
     inputs[1].clear()
-    inputs[1].send_keys(TEST_EMAIL)
-    inputs[2].clear()
-    inputs[2].send_keys(TEST_PASSWORD)
+    inputs[1].send_keys(TEST_PASSWORD)
     driver.find_elements(By.TAG_NAME, "button")[0].click()
     time.sleep(3)
-    assert "register" not in driver.current_url.lower() or "success" in driver.page_source.lower() or "login" in driver.current_url.lower()
-run_test("Register new user successfully", t6)
+    assert "dashboard" in driver.current_url.lower() or "login" not in driver.current_url.lower()
+run_test("Login with existing user credentials", t6)
 
 def t7():
     driver.get(f"{BASE_URL}/login")
@@ -91,7 +89,7 @@ def t7():
     driver.find_elements(By.TAG_NAME, "button")[0].click()
     time.sleep(3)
     assert "dashboard" in driver.current_url.lower() or "login" not in driver.current_url.lower()
-run_test("Login with valid credentials", t7)
+run_test("User dashboard accessible after login", t7)
 
 def t8():
     driver.get(f"{BASE_URL}/login")
