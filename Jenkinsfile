@@ -91,12 +91,12 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running Selenium tests inside Docker...'
+                echo 'Running Selenium tests inside Docker container...'
 
                 sh '''
                     docker run --rm \
-                        --network host \
-                        -e APP_URL=http://127.0.0.1:8081 \
+                        --network ci_network \
+                        -e APP_URL=http://ci_eventara_frontend:80 \
                         -v ${WORKSPACE}/tests:/tests \
                         eventara-selenium-test \
                         python3 /tests/test_eventara.py | tee test_results.txt
@@ -119,25 +119,21 @@ pipeline {
             archiveArtifacts artifacts: 'test_results.txt', fingerprint: true
 
             script {
-                def recipient = env.CHANGE_AUTHOR_EMAIL
+                def recipient = "eqaniqbal@gmail.com"
 
-                if (recipient == null || recipient.trim() == "") {
-                    echo "No commit author email found. Skipping email notification."
-                } else {
-                    emailext (
-                        to: recipient,
-                        subject: "Jenkins Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """
+                emailext (
+                    to: recipient,
+                    subject: "Jenkins Build ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """
 Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status: ${currentBuild.currentResult}
 
-Docker CI/CD pipeline executed successfully.
+Docker CI/CD Pipeline executed successfully.
 
-Check Jenkins logs for full details:
+Check full logs:
 ${env.BUILD_URL}console
 """
-                    )
-                }
+                )
             }
 
             cleanWs()
