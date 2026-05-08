@@ -56,7 +56,7 @@ pipeline {
 
                 sh 'sleep 10'
 
-                // BACKEND (FIXED DNS)
+                // BACKEND
                 sh '''
                     docker run -d \
                         --name ci_eventara_backend \
