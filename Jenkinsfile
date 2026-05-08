@@ -80,18 +80,8 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running Selenium tests...'
-                sh '''
-                    docker run --rm \
-                        --network ci_network \
-                        -v ${WORKSPACE}/tests:/tests \
-                        python:3.11-slim \
-                        bash -c "
-                            apt-get update -qq &&
-                            apt-get install -y -qq chromium chromium-driver &&
-                            pip install -r /tests/requirements.txt -q &&
-                            python /tests/test_eventara.py
-                        "
-                '''
+                sh 'pip3 install selenium==4.18.1 webdriver-manager==4.0.1 --break-system-packages -q'
+                sh 'APP_URL=http://47.128.219.68:8081 python3 ${WORKSPACE}/tests/test_eventara.py'
             }
         }
     }
