@@ -72,7 +72,7 @@ pipeline {
                         eqaniqbal/eventara-frontend:latest
                 '''
 
-                sh 'sleep 10'
+                sh 'sleep 15'
             }
         }
 
@@ -91,12 +91,11 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running Selenium tests inside Docker container...'
+                echo 'Running Selenium tests...'
 
                 sh '''
                     docker run --rm \
-                        --network ci_network \
-                        -e APP_URL=http://ci_eventara_frontend:80 \
+                        -e APP_URL=http://47.128.219.68:8081 \
                         -v ${WORKSPACE}/tests:/tests \
                         eventara-selenium-test \
                         python3 /tests/test_eventara.py | tee test_results.txt
@@ -128,9 +127,9 @@ pipeline {
 Build: ${env.JOB_NAME} #${env.BUILD_NUMBER}
 Status: ${currentBuild.currentResult}
 
-Docker CI/CD Pipeline executed successfully.
+Pipeline executed successfully.
 
-Check full logs:
+Check logs:
 ${env.BUILD_URL}console
 """
                 )
